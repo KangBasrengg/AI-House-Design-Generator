@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -14,8 +14,6 @@ interface ChatMessage {
   sender_email: string;
   text: string;
   image_url?: string;
-  image_url?: string;
-  image_url?: string;
   created_at: string;
 }
 
@@ -28,8 +26,7 @@ export default function UpgradePage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingImg, setUploadingImg] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -76,45 +73,7 @@ export default function UpgradePage() {
       })
       .subscribe();
 
-        const handleInstantUpgrade = async () => {
-    if (!user) return;
-    const supabase = getSupabaseBrowser();
-    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
-    if (!error) {
-      await useAuthStore.getState().fetchProfile();
-      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
-      window.location.href = '/generate';
-    } else {
-      alert('Gagal: ' + error.message);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user || !profile) return;
-    setUploadingImg(true);
-    const supabase = getSupabaseBrowser();
-    const fileExt = file.name.split('.').pop();
-    const fileName = Math.random().toString(36).substring(2) + '.' + fileExt;
-    const filePath = user.id + '/' + fileName;
-    const { error: uploadError } = await supabase.storage.from('chat_images').upload(filePath, file);
-    if (uploadError) {
-      alert('Gagal mengupload gambar.');
-      setUploadingImg(false);
-      return;
-    }
-    const { data: publicUrlData } = supabase.storage.from('chat_images').getPublicUrl(filePath);
-    await supabase.from('chat_messages').insert({
-      sender_id: user.id,
-      sender_email: user.email,
-      text: 'Mengirim gambar 📷',
-      image_url: publicUrlData.publicUrl,
-      session_id: profile.role === 'admin' ? user.id : user.id
-    });
-    setUploadingImg(false);
-  };
-
-  return () => {
+    return () => {
       supabase.removeChannel(channel);
     };
   }, [user, profile]);
@@ -143,7 +102,7 @@ export default function UpgradePage() {
     setSending(false);
   };
 
-    const handleInstantUpgrade = async () => {
+  const handleInstantUpgrade = async () => {
     if (!user) return;
     const supabase = getSupabaseBrowser();
     const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
@@ -193,44 +152,6 @@ export default function UpgradePage() {
     setUploadingImg(false);
   };
 
-      const handleInstantUpgrade = async () => {
-    if (!user) return;
-    const supabase = getSupabaseBrowser();
-    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
-    if (!error) {
-      await useAuthStore.getState().fetchProfile();
-      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
-      window.location.href = '/generate';
-    } else {
-      alert('Gagal: ' + error.message);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user || !profile) return;
-    setUploadingImg(true);
-    const supabase = getSupabaseBrowser();
-    const fileExt = file.name.split('.').pop();
-    const fileName = Math.random().toString(36).substring(2) + '.' + fileExt;
-    const filePath = user.id + '/' + fileName;
-    const { error: uploadError } = await supabase.storage.from('chat_images').upload(filePath, file);
-    if (uploadError) {
-      alert('Gagal mengupload gambar.');
-      setUploadingImg(false);
-      return;
-    }
-    const { data: publicUrlData } = supabase.storage.from('chat_images').getPublicUrl(filePath);
-    await supabase.from('chat_messages').insert({
-      sender_id: user.id,
-      sender_email: user.email,
-      text: 'Mengirim gambar 📷',
-      image_url: publicUrlData.publicUrl,
-      session_id: profile.role === 'admin' ? user.id : user.id
-    });
-    setUploadingImg(false);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a1a] flex flex-col transition-colors duration-300">
       <Navbar />
@@ -251,6 +172,16 @@ export default function UpgradePage() {
               ? 'Dapatkan akses tak terbatas ke semua fitur premium, termasuk export AutoCAD resolusi tinggi.' 
               : 'Get unlimited access to all premium features, including high-resolution AutoCAD export.'}
           </p>
+
+          <div className="space-y-4 mb-8 relative z-10 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
+            <button 
+              onClick={handleInstantUpgrade}
+              className="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg shadow-lg shadow-amber-500/30 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+            >
+              ⭐ {lang === 'id' ? 'AKTIFKAN PREMIUM SEKARANG (GRATIS)' : 'ACTIVATE PREMIUM NOW (FREE)'} ⭐
+            </button>
+            <p className="text-center text-xs text-gray-500 mt-2">Tombol spesial (Bypass Database) untuk mempermudah Anda.</p>
+          </div>
 
           <div className="space-y-4 mb-8 relative z-10 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
             {[
@@ -306,45 +237,7 @@ export default function UpgradePage() {
 
                 {messages.map((msg) => {
                   const isMe = msg.sender_id === user?.id;
-                      const handleInstantUpgrade = async () => {
-    if (!user) return;
-    const supabase = getSupabaseBrowser();
-    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
-    if (!error) {
-      await useAuthStore.getState().fetchProfile();
-      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
-      window.location.href = '/generate';
-    } else {
-      alert('Gagal: ' + error.message);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user || !profile) return;
-    setUploadingImg(true);
-    const supabase = getSupabaseBrowser();
-    const fileExt = file.name.split('.').pop();
-    const fileName = Math.random().toString(36).substring(2) + '.' + fileExt;
-    const filePath = user.id + '/' + fileName;
-    const { error: uploadError } = await supabase.storage.from('chat_images').upload(filePath, file);
-    if (uploadError) {
-      alert('Gagal mengupload gambar.');
-      setUploadingImg(false);
-      return;
-    }
-    const { data: publicUrlData } = supabase.storage.from('chat_images').getPublicUrl(filePath);
-    await supabase.from('chat_messages').insert({
-      sender_id: user.id,
-      sender_email: user.email,
-      text: 'Mengirim gambar 📷',
-      image_url: publicUrlData.publicUrl,
-      session_id: profile.role === 'admin' ? user.id : user.id
-    });
-    setUploadingImg(false);
-  };
-
-  return (
+                  return (
                     <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[85%] p-3 rounded-2xl text-sm shadow-sm flex flex-col gap-1 ${
                         isMe 
@@ -377,10 +270,6 @@ export default function UpgradePage() {
           {user && (
             <div className="p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
               <form onSubmit={handleSendMessage} className="flex gap-2">
-                <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
-<button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadingImg || sending} className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-indigo-600 shrink-0">
-  {uploadingImg ? '...' : '📷'}
-</button>
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -403,10 +292,6 @@ export default function UpgradePage() {
                     </svg>
                   )}
                 </button>
-                <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
-<button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadingImg || sending} className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-indigo-600 shrink-0">
-  {uploadingImg ? '...' : '📷'}
-</button>
                 <input
                   type="text"
                   value={inputText}
@@ -434,5 +319,3 @@ export default function UpgradePage() {
     </div>
   );
 }
-
-
