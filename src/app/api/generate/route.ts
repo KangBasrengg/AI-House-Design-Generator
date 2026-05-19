@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { buildPrompt, parseAIResponse } from '@/lib/ai/prompt';
+import { Room } from '@/types/house';
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,22 +49,22 @@ function getDemoLayout(prompt: string) {
   const w = isLarge ? 14 : 10;
   const h = isLarge ? 16 : 12;
 
-  const rooms = [
-    { id: 'r1', type: 'living_room' as const, label: 'Living Room', x: 0, y: 0, width: 5, height: 4, color: '#A8D5A2' },
-    { id: 'r2', type: 'kitchen' as const, label: 'Kitchen', x: 5, y: 0, width: 3, height: 3, color: '#F5B971' },
-    { id: 'r3', type: 'dining_room' as const, label: 'Dining Room', x: 5, y: 3, width: 3, height: 3, color: '#E8A87C' },
-    { id: 'r4', type: 'bedroom' as const, label: 'Master Bedroom', x: 0, y: 4, width: 4, height: 4, color: '#8B9FD4' },
-    { id: 'r5', type: 'bedroom' as const, label: 'Bedroom 2', x: 4, y: 6, width: 3, height: 3, color: '#8B9FD4' },
-    { id: 'r6', type: 'bathroom' as const, label: 'Bathroom', x: 7, y: 6, width: 2, height: 2.5, color: '#7EC8C8' },
-    { id: 'r7', type: 'entrance' as const, label: 'Entrance', x: 8, y: 0, width: 2, height: 2, color: '#FFD4A8' },
-    { id: 'r8', type: 'hallway' as const, label: 'Hallway', x: 4, y: 4, width: 1, height: 2, color: '#E8E0D0' },
+  const rooms: Room[] = [
+    { id: 'r1', type: 'living_room', label: 'Living Room', x: 0, y: 0, width: 5, height: 4, color: '#A8D5A2' },
+    { id: 'r2', type: 'kitchen', label: 'Kitchen', x: 5, y: 0, width: 3, height: 3, color: '#F5B971' },
+    { id: 'r3', type: 'dining_room', label: 'Dining Room', x: 5, y: 3, width: 3, height: 3, color: '#E8A87C' },
+    { id: 'r4', type: 'bedroom', label: 'Master Bedroom', x: 0, y: 4, width: 4, height: 4, color: '#8B9FD4' },
+    { id: 'r5', type: 'bedroom', label: 'Bedroom 2', x: 4, y: 6, width: 3, height: 3, color: '#8B9FD4' },
+    { id: 'r6', type: 'bathroom', label: 'Bathroom', x: 7, y: 6, width: 2, height: 2.5, color: '#7EC8C8' },
+    { id: 'r7', type: 'entrance', label: 'Entrance', x: 8, y: 0, width: 2, height: 2, color: '#FFD4A8' },
+    { id: 'r8', type: 'hallway', label: 'Hallway', x: 4, y: 4, width: 1, height: 2, color: '#E8E0D0' },
   ];
 
   if (has3Bed) {
-    rooms.push({ id: 'r9', type: 'bedroom' as const, label: 'Bedroom 3', x: 0, y: 8, width: 3, height: 3, color: '#8B9FD4' });
+    rooms.push({ id: 'r9', type: 'bedroom', label: 'Bedroom 3', x: 0, y: 8, width: 3, height: 3, color: '#8B9FD4' });
   }
   if (hasGarage) {
-    rooms.push({ id: 'r10', type: 'garage' as const, label: 'Garage', x: 8, y: 2, width: 3, height: 4, color: '#C4C4C4' });
+    rooms.push({ id: 'r10', type: 'garage', label: 'Garage', x: 8, y: 2, width: 3, height: 4, color: '#C4C4C4' });
   }
 
   return {
