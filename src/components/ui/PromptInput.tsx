@@ -1,8 +1,9 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useHouseStore } from '@/store/useHouseStore';
 import { useAppStore } from '@/store/useAppStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { translations } from '@/lib/i18n/translations';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,10 +18,26 @@ export default function PromptInput() {
   const { prompt, setPrompt, isGenerating, setIsGenerating, setLayout, setDescription } = useHouseStore();
   const { lang } = useAppStore();
   const t = translations[lang] || translations['en'];
+  const { user, profile, incrementGenerateCount, setAuthModal } = useAuthStore();
+  const canGenerate = useAuthStore((s) => s.canGenerate());
+  const isMember = useAuthStore((s) => s.isMember());
   const [error, setError] = useState('');
   const [showExamples, setShowExamples] = useState(false);
 
   const handleGenerate = async () => {
+    if (!user) {
+      setError(lang === 'id' ? 'Silakan login terlebih dahulu untuk menggenerate desain.' : 'Please sign in first to generate designs.');
+      setAuthModal(true, 'login');
+      return;
+    }
+
+    if (!canGenerate) {
+      setError(lang === 'id'
+        ? 'Anda telah mencapai batas generate (1x) sebagai non-member. Hubungi admin untuk upgrade ke member.'
+        : 'You have reached the generate limit (1x) as a non-member. Contact admin to upgrade to member.');
+      return;
+    }
+
     if (!prompt.trim() || prompt.trim().length < 5) {
       setError(lang === 'id' ? 'Deskripsikan desain rumahmu (min 5 karakter)' : 'Please describe your house design (min 5 characters)');
       return;
@@ -44,6 +61,9 @@ export default function PromptInput() {
       const data = await res.json();
       setLayout(data.layout);
       setDescription(data.description);
+
+      // Increment generate count for tracking
+      await incrementGenerateCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -53,6 +73,35 @@ export default function PromptInput() {
 
   return (
     <div className="space-y-4">
+      {/* Member status badge */}
+      {user && profile && (
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium ${
+          isMember
+            ? 'bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
+            : 'bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-400'
+        }`}>
+          <span>{isMember ? '⭐' : '👤'}</span>
+          <span>
+            {isMember
+              ? (lang === 'id' ? 'Member — Generate Unlimited' : 'Member — Unlimited Generates')
+              : (lang === 'id' ? `Non-Member — ${profile.generate_count || 0}/1 Generate` : `Non-Member — ${profile.generate_count || 0}/1 Generate`)
+            }
+          </span>
+        </div>
+      )}
+
+      {!user && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+          <span>🔑</span>
+          <span>
+            {lang === 'id' ? 'Login untuk mulai generate — ' : 'Sign in to start generating — '}
+            <button onClick={() => setAuthModal(true, 'login')} className="underline font-bold hover:text-indigo-700 dark:hover:text-indigo-300">
+              {lang === 'id' ? 'Masuk' : 'Sign In'}
+            </button>
+          </span>
+        </div>
+      )}
+
       <div className="relative">
         <textarea
           id="prompt-input"
@@ -116,7 +165,7 @@ export default function PromptInput() {
       <button
         id="generate-button"
         onClick={handleGenerate}
-        disabled={isGenerating || !prompt.trim()}
+        disabled={isGenerating || !prompt.trim() || (!user)}
         className="w-full py-3.5 px-6 rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed relative overflow-hidden group"
         style={{
           background: isGenerating

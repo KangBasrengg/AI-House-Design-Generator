@@ -134,6 +134,38 @@ export default function FloorplanCanvas() {
       ctx.fillRect(rx, ry, rw, rh);
       ctx.globalAlpha = 1;
 
+      // Draw staircase indicators
+      const isStairs = room.type === 'staircase' || room.type === 'stairs' || /stair|tangga/i.test(room.label);
+      if (isStairs) {
+        ctx.save();
+        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const steps = 8;
+        const isVertical = rh > rw;
+        if (isVertical) {
+          const stepH = rh / steps;
+          for (let i = 1; i < steps; i++) {
+            ctx.moveTo(rx, ry + i * stepH);
+            ctx.lineTo(rx + rw, ry + i * stepH);
+          }
+          // Draw a center line
+          ctx.moveTo(rx + rw / 2, ry + rh * 0.1);
+          ctx.lineTo(rx + rw / 2, ry + rh * 0.9);
+        } else {
+          const stepW = rw / steps;
+          for (let i = 1; i < steps; i++) {
+            ctx.moveTo(rx + i * stepW, ry);
+            ctx.lineTo(rx + i * stepW, ry + rh);
+          }
+          // Draw a center line
+          ctx.moveTo(rx + rw * 0.1, ry + rh / 2);
+          ctx.lineTo(rx + rw * 0.9, ry + rh / 2);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // Room border
       ctx.strokeStyle = selectedRoomId === room.id ? SELECTED_BORDER : wallColor;
       ctx.lineWidth = selectedRoomId === room.id ? 3 : 2;
