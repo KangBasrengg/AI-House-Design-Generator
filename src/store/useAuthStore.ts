@@ -137,21 +137,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   fetchProfile: async () => {
     const { user } = get();
     if (!user) return;
+    const fallbackProfile = { id: user.id, email: user.email || '', role: 'non-member' as const, generate_count: 0, created_at: new Date().toISOString() };
     try {
       const supabase = getSupabaseBrowser();
       const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
       if (error) {
         if (error.code === 'PGRST116') {
-          const { data: newProfile } = await supabase.from('profiles').insert({
+          const { data: newProfile, error: insertErr } = await supabase.from('profiles').insert({
             id: user.id, email: user.email, role: 'non-member', generate_count: 0,
           }).select().single();
-          set({ profile: newProfile as UserProfile });
+          set({ profile: newProfile || fallbackProfile });
+        } else {
+          set({ profile: fallbackProfile });
         }
         return;
       }
-      set({ profile: data as UserProfile });
+      set({ profile: data || fallbackProfile });
     } catch (err) {
       console.error('Fetch profile error:', err);
+      set({ profile: fallbackProfile });
     }
   },
 
@@ -193,4 +197,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return profile.role === 'member' || profile.role === 'admin';
   },
 }));
+
 
