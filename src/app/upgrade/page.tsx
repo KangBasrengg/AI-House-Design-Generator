@@ -76,7 +76,20 @@ export default function UpgradePage() {
       })
       .subscribe();
 
-      const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleInstantUpgrade = async () => {
+    if (!user) return;
+    const supabase = getSupabaseBrowser();
+    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
+    if (!error) {
+      await useAuthStore.getState().fetchProfile();
+      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
+      window.location.href = '/generate';
+    } else {
+      alert('Gagal: ' + error.message);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
     setUploadingImg(true);
@@ -130,6 +143,19 @@ export default function UpgradePage() {
     setSending(false);
   };
 
+    const handleInstantUpgrade = async () => {
+    if (!user) return;
+    const supabase = getSupabaseBrowser();
+    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
+    if (!error) {
+      await useAuthStore.getState().fetchProfile();
+      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
+      window.location.href = '/generate';
+    } else {
+      alert('Gagal: ' + error.message);
+    }
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
@@ -167,7 +193,20 @@ export default function UpgradePage() {
     setUploadingImg(false);
   };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleInstantUpgrade = async () => {
+    if (!user) return;
+    const supabase = getSupabaseBrowser();
+    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
+    if (!error) {
+      await useAuthStore.getState().fetchProfile();
+      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
+      window.location.href = '/generate';
+    } else {
+      alert('Gagal: ' + error.message);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
     setUploadingImg(true);
@@ -267,7 +306,20 @@ export default function UpgradePage() {
 
                 {messages.map((msg) => {
                   const isMe = msg.sender_id === user?.id;
-                    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+                      const handleInstantUpgrade = async () => {
+    if (!user) return;
+    const supabase = getSupabaseBrowser();
+    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
+    if (!error) {
+      await useAuthStore.getState().fetchProfile();
+      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
+      window.location.href = '/generate';
+    } else {
+      alert('Gagal: ' + error.message);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !profile) return;
     setUploadingImg(true);
@@ -382,4 +434,5 @@ export default function UpgradePage() {
     </div>
   );
 }
+
 
