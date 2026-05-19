@@ -308,7 +308,7 @@ export default function LandingHero() {
             <p className="text-gray-500 text-xs text-center md:text-right">
               © {new Date().getFullYear()} AI House Design Generator. All rights reserved.
             </p>
-            <p className="text-gray-400 dark:text-gray-600 text-[10px] text-center md:text-right max-w-md">
+            <p className="text-gray-400 dark:text-gray-600 text-[8px] leading-relaxed text-center md:text-right max-w-md">
               Protected by copyright and licensing laws. Unauthorised replication, distribution, or commercial reuse of this application or its design generator architecture is strictly prohibited.
             </p>
           </div>
