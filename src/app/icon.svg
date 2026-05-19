@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" /> 
+      <stop offset="100%" stop-color="#8b5cf6" /> 
+    </linearGradient>
+  </defs>
+
+  <rect width="120" height="120" rx="24" fill="#0f172a" />
+
+  <path d="M10 40 L110 40 M10 80 L110 80 M40 10 L40 110 M80 10 L80 110" stroke="#1e293b" stroke-width="2" />
+
+  <path d="M60 25 L20 60 L30 60 L30 95 L50 95 L50 75 L70 75 L70 95 L90 95 L90 60 L100 60 Z" 
+        fill="none" 
+        stroke="url(#aiGradient)" 
+        stroke-width="8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+
+  <path d="M60 35 Q60 50 45 50 Q60 50 60 65 Q60 50 75 50 Q60 50 60 35 Z" fill="#38bdf8" />
+</svg>
