@@ -12,7 +12,7 @@ The JSON must follow this exact schema:
   "house": {
     "name": "string - name for the design",
     "style": "string - architectural style",
-    "width": number (total width in meters, between 6 and 30),
+    "width": number (total width in meters, between 6 and 40),
     "height": number (total height/depth in meters, between 6 and 30),
     "description": "string - brief description of the design",
     "rooms": [
@@ -29,14 +29,21 @@ The JSON must follow this exact schema:
 }
 
 Rules:
-1. Rooms must NOT overlap
-2. Rooms should be aligned to the house boundary (0,0 is top-left)
-3. All rooms must fit within the house width and height
-4. Include realistic room sizes (bedrooms ~3x3-4x4, bathrooms ~2x2-3x3, etc.)
-5. Ensure logical adjacency (bathrooms near bedrooms, kitchen near dining)
-6. Add a hallway or entrance for connectivity
-7. Each room needs a unique descriptive label
-8. Return ONLY the JSON object, nothing else`;
+1. Rooms must NOT overlap under any circumstances.
+2. Rooms should be aligned to the house boundary (0,0 is top-left).
+3. All rooms must fit within the house width and height.
+4. Include realistic room sizes (bedrooms ~3x3-4x4, bathrooms ~2x2-3x3, etc.).
+5. Ensure logical adjacency (bathrooms near bedrooms, kitchen near dining).
+6. Add a hallway or entrance for connectivity.
+7. Each room needs a unique descriptive label (e.g., 'Ground Floor Bedroom', '2nd Floor Master Bedroom').
+8. Return ONLY the JSON object, nothing else.
+
+SPECIAL INSTRUCTION FOR 2-STORY HOUSES (Rumah 2 Lantai):
+If the user requests a 2-story house, you MUST generate TWO layouts side-by-side within the same JSON. 
+- Double the total house "width" to accommodate both floors side-by-side (e.g., if the user wants 10x12, make the total width 22, height 12).
+- Place Ground Floor (Lantai Dasar) rooms on the LEFT side (e.g., x from 0 to 10).
+- Place 2nd Floor (Lantai 2) rooms on the RIGHT side (e.g., x from 12 to 22), leaving a gap in between.
+- DO NOT overlap rooms between floors. They must be physically separated on the X axis.`;
 }
 
 export function parseAIResponse(text: string): { layout: HouseLayout; description: string } {
