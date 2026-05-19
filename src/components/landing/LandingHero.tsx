@@ -2,6 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Navbar from '../ui/Navbar';
+import { useAppStore } from '@/store/useAppStore';
+import { translations } from '@/lib/i18n/translations';
 
 const features = [
   {
@@ -44,8 +47,12 @@ const steps = [
 ];
 
 export default function LandingHero() {
+  const { lang } = useAppStore();
+  const t = translations[lang] || translations['en'];
+
   return (
-    <div className="relative bg-[#0a0a1a]">
+    <div className="relative bg-white dark:bg-[#0a0a1a] transition-colors duration-300">
+      <Navbar />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Animated background */}
@@ -65,25 +72,24 @@ export default function LandingHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-sm mb-8">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
               </span>
-              AI-Powered Architecture
+              {t.heroBadge}
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Design Your Dream
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+              {t.heroTitle1}
               <br />
-              <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                House with AI
+              <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                {t.heroTitle2}
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Transform your ideas into professional floorplans instantly. Just describe what you want,
-              and our AI generates an editable layout you can export to AutoCAD.
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+              {t.heroSubtitle}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
@@ -97,7 +103,7 @@ export default function LandingHero() {
                 >
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                   <span className="relative flex items-center gap-2">
-                    Start Designing
+                    {t.btnStart}
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
@@ -106,9 +112,9 @@ export default function LandingHero() {
               </Link>
               <a
                 href="#features"
-                className="px-8 py-4 rounded-2xl font-semibold text-gray-300 border border-gray-700 hover:border-gray-600 hover:text-white transition-colors"
+                className="px-8 py-4 rounded-2xl font-semibold text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
-                Learn More
+                {t.btnLearnMore}
               </a>
             </div>
           </motion.div>
