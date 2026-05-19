@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useHouseStore } from '@/store/useHouseStore';
@@ -135,7 +135,7 @@ export default function FloorplanCanvas() {
       ctx.globalAlpha = 1;
 
       // Draw staircase indicators
-      const isStairs = room.type === 'staircase' || room.type === 'stairs' || /stair|tangga/i.test(room.label);
+      const isStairs = (room.type as string) === 'staircase' || (room.type as string) === 'stairs' || /stair|tangga/i.test(room.label);
       if (isStairs) {
         ctx.save();
         ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.3)';
@@ -191,7 +191,7 @@ export default function FloorplanCanvas() {
       // Room dimensions
       ctx.fillStyle = '#334155'; // Darker gray for dimensions on colored background
       ctx.font = `${fontSize - 2}px Inter, system-ui, sans-serif`;
-      ctx.fillText(`${room.width}×${room.height}m`, rx + rw / 2, ry + rh / 2 + 10);
+      ctx.fillText(`${room.width}Ã—${room.height}m`, rx + rw / 2, ry + rh / 2 + 10);
     }
 
     // House boundary outline
@@ -329,7 +329,7 @@ export default function FloorplanCanvas() {
           onClick={() => useHouseStore.getState().setScale(Math.max(20, scale - 10))}
           className="w-9 h-9 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur text-gray-900 dark:text-white flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm"
         >
-          −
+          âˆ’
         </button>
         <span className="flex items-center px-3 text-xs text-gray-700 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
           {scale}px/m
@@ -344,3 +344,4 @@ export default function FloorplanCanvas() {
     </div>
   );
 }
+
