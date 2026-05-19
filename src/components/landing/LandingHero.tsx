@@ -52,7 +52,7 @@ export default function LandingHero() {
 
   return (
     <div className="relative bg-white dark:bg-[#0a0a1a] transition-colors duration-300">
-      <Navbar />
+      <Navbar absolute />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Animated background */}
@@ -179,8 +179,8 @@ export default function LandingHero() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-28 px-6">
+            {/* Features Section */}
+      <section id="features" className="py-28 px-6 transition-colors duration-300">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -188,11 +188,11 @@ export default function LandingHero() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Everything You Need to Design
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t.featTitle}
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              From AI generation to CAD export — all the tools you need in one place.
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              {t.featSubtitle}
             </p>
           </motion.div>
 
@@ -204,13 +204,13 @@ export default function LandingHero() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-gray-700 transition-colors group"
+                className="p-6 rounded-2xl bg-white dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-gray-700 shadow-sm dark:shadow-none transition-colors group"
               >
                 <div className="text-3xl mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-indigo-400 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -219,8 +219,9 @@ export default function LandingHero() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-28 px-6 bg-[#080818]">
+
+            {/* How It Works */}
+      <section className="py-28 px-6 bg-gray-50 dark:bg-[#080818] transition-colors duration-300">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -228,10 +229,10 @@ export default function LandingHero() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              How It Works
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t.howTitle}
             </h2>
-            <p className="text-gray-400">Four simple steps to your dream house design</p>
+            <p className="text-gray-600 dark:text-gray-400">{t.howSubtitle}</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -242,15 +243,15 @@ export default function LandingHero() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="relative p-6 rounded-2xl bg-gray-900/30 border border-gray-800"
+                className="relative p-6 rounded-2xl bg-white dark:bg-gray-900/30 border border-gray-200 dark:border-gray-800 shadow-sm dark:shadow-none transition-colors"
               >
                 <span className="text-4xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
                   {step.num}
                 </span>
-                <h3 className="text-xl font-semibold text-white mt-3 mb-2">{step.title}</h3>
-                <p className="text-gray-400 text-sm">{step.text}</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-3 mb-2">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{step.text}</p>
                 {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-px bg-gray-700" />
+                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-px bg-gray-300 dark:bg-gray-700" />
                 )}
               </motion.div>
             ))}
@@ -258,20 +259,21 @@ export default function LandingHero() {
         </div>
       </section>
 
+
       {/* CTA Section */}
-      <section className="py-28 px-6">
+      <section className="py-28 px-6 transition-colors duration-300">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="max-w-3xl mx-auto text-center"
         >
-          <div className="p-12 rounded-3xl bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-indigo-500/20">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Ready to Design?
+          <div className="p-12 rounded-3xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-500/20 shadow-md dark:shadow-none transition-colors duration-300">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t.ctaTitle}
             </h2>
-            <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-              Start creating professional house floorplans with AI — no design experience needed.
+            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg mx-auto">
+              {t.ctaSubtitle}
             </p>
             <Link href="/generate">
               <motion.button
@@ -281,7 +283,7 @@ export default function LandingHero() {
                 style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7)' }}
                 id="cta-get-started"
               >
-                Get Started Free →
+                {t.btnGetStarted}
               </motion.button>
             </Link>
           </div>
@@ -289,13 +291,13 @@ export default function LandingHero() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-gray-800 bg-[#080818]">
+      <footer className="py-8 px-6 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#080818] transition-colors duration-300">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white font-semibold">
+          <div className="flex items-center gap-2 text-gray-900 dark:text-white font-semibold">
             <svg className="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
-            AI House Design
+            {t.navTitle}
           </div>
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} AI House Design Generator. All rights reserved.

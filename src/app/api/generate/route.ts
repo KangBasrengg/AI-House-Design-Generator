@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const aiPrompt = buildPrompt(prompt);
     const result = await model.generateContent(aiPrompt);
@@ -30,10 +30,32 @@ export async function POST(req: NextRequest) {
 
     const parsed = parseAIResponse(text);
     return NextResponse.json(parsed);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Generate API error:', error);
+
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    // Handle Gemini API quota/rate limit errors
+    if (errorMessage.includes('429') || errorMessage.includes('quota') || errorMessage.includes('Too Many Requests')) {
+      // Fallback to demo layout when quota is exceeded
+      const { prompt } = await req.clone().json().catch(() => ({ prompt: '' }));
+      const demoData = getDemoLayout(prompt || 'default');
+      return NextResponse.json({
+        ...demoData,
+        description: demoData.description + '\n\n⚠️ Note: AI quota exceeded. Showing demo layout. Please try again later or upgrade your API plan.',
+      });
+    }
+
+    // Handle invalid API key
+    if (errorMessage.includes('401') || errorMessage.includes('API_KEY') || errorMessage.includes('Unauthorized')) {
+      return NextResponse.json(
+        { error: 'Invalid Gemini API key. Please check your .env.local configuration.' },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Failed to generate house design. Please try again.' },
+      { error: `Failed to generate house design: ${errorMessage.substring(0, 150)}` },
       { status: 500 }
     );
   }

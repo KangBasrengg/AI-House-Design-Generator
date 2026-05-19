@@ -2,11 +2,23 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useHouseStore } from '@/store/useHouseStore';
+import { useAppStore } from '@/store/useAppStore';
+import { translations } from '@/lib/i18n/translations';
+import { useTheme } from 'next-themes';
 import { Room, ROOM_COLORS, RoomType } from '@/types/house';
 
-const GRID_COLOR = '#1a1a2e';
-const GRID_LINE_COLOR = '#2a2a4e';
-const WALL_COLOR = '#e0e0e0';
+// Light mode colors
+const LIGHT_GRID_COLOR = '#f8fafc';
+const LIGHT_GRID_LINE_COLOR = '#e2e8f0';
+const LIGHT_WALL_COLOR = '#94a3b8';
+const LIGHT_TEXT_COLOR = '#1e293b';
+
+// Dark mode colors
+const DARK_GRID_COLOR = '#1a1a2e';
+const DARK_GRID_LINE_COLOR = '#2a2a4e';
+const DARK_WALL_COLOR = '#e0e0e0';
+const DARK_TEXT_COLOR = '#e2e8f0';
+
 const SELECTED_BORDER = '#6366f1';
 const DIMENSION_COLOR = '#94a3b8';
 
@@ -14,9 +26,19 @@ export default function FloorplanCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { layout, scale, selectedRoomId, setSelectedRoom, updateRoom } = useHouseStore();
+  const { lang } = useAppStore();
+  const t = translations[lang] || translations['en'];
+  const { theme, systemTheme } = useTheme();
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
+  
+  // Need to handle hydration mismatch for theme
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const currentTheme = theme === 'system' ? systemTheme : theme;
+  const isDark = mounted ? currentTheme === 'dark' : true; // Default dark to prevent flash
 
   // Responsive canvas sizing
   useEffect(() => {
@@ -44,7 +66,7 @@ export default function FloorplanCanvas() {
   // Draw the floorplan
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !layout) return;
+    if (!canvas || !layout || !mounted) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -56,12 +78,19 @@ export default function FloorplanCanvas() {
 
     const offset = getOffset();
 
+    // Set colors based on theme
+    const gridColor = isDark ? DARK_GRID_COLOR : LIGHT_GRID_COLOR;
+    const gridLineColor = isDark ? DARK_GRID_LINE_COLOR : LIGHT_GRID_LINE_COLOR;
+    const wallColor = isDark ? DARK_WALL_COLOR : LIGHT_WALL_COLOR;
+    const textColor = isDark ? DARK_TEXT_COLOR : LIGHT_TEXT_COLOR;
+    const houseBgColor = isDark ? '#0d1117' : '#ffffff';
+
     // Background
-    ctx.fillStyle = GRID_COLOR;
+    ctx.fillStyle = gridColor;
     ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
     // Grid
-    ctx.strokeStyle = GRID_LINE_COLOR;
+    ctx.strokeStyle = gridLineColor;
     ctx.lineWidth = 0.5;
     const gridStep = scale;
     for (let x = offset.x % gridStep; x < canvasSize.width; x += gridStep) {
@@ -84,11 +113,11 @@ export default function FloorplanCanvas() {
     const houseH = layout.height * scale;
 
     // House shadow
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+    ctx.shadowColor = isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)';
     ctx.shadowBlur = 20;
     ctx.shadowOffsetX = 5;
     ctx.shadowOffsetY = 5;
-    ctx.fillStyle = '#0d1117';
+    ctx.fillStyle = houseBgColor;
     ctx.fillRect(houseX, houseY, houseW, houseH);
     ctx.shadowColor = 'transparent';
 
@@ -101,12 +130,12 @@ export default function FloorplanCanvas() {
 
       // Room fill
       ctx.fillStyle = room.color || ROOM_COLORS[room.type as RoomType] || '#ddd';
-      ctx.globalAlpha = 0.85;
+      ctx.globalAlpha = isDark ? 0.85 : 0.6;
       ctx.fillRect(rx, ry, rw, rh);
       ctx.globalAlpha = 1;
 
       // Room border
-      ctx.strokeStyle = selectedRoomId === room.id ? SELECTED_BORDER : WALL_COLOR;
+      ctx.strokeStyle = selectedRoomId === room.id ? SELECTED_BORDER : wallColor;
       ctx.lineWidth = selectedRoomId === room.id ? 3 : 2;
       ctx.strokeRect(rx, ry, rw, rh);
 
@@ -121,20 +150,20 @@ export default function FloorplanCanvas() {
 
       // Room label
       const fontSize = Math.min(rw, rh) > 80 ? 13 : 10;
-      ctx.fillStyle = '#1a1a2e';
+      ctx.fillStyle = '#1a1a2e'; // Always dark for room labels since they have colored backgrounds
       ctx.font = `bold ${fontSize}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(room.label, rx + rw / 2, ry + rh / 2 - 8);
 
       // Room dimensions
-      ctx.fillStyle = DIMENSION_COLOR;
+      ctx.fillStyle = '#334155'; // Darker gray for dimensions on colored background
       ctx.font = `${fontSize - 2}px Inter, system-ui, sans-serif`;
       ctx.fillText(`${room.width}×${room.height}m`, rx + rw / 2, ry + rh / 2 + 10);
     }
 
     // House boundary outline
-    ctx.strokeStyle = WALL_COLOR;
+    ctx.strokeStyle = wallColor;
     ctx.lineWidth = 3;
     ctx.strokeRect(houseX, houseY, houseW, houseH);
 
@@ -148,7 +177,7 @@ export default function FloorplanCanvas() {
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`${layout.height}m`, 0, 0);
     ctx.restore();
-  }, [layout, scale, selectedRoomId, canvasSize, getOffset]);
+  }, [layout, scale, selectedRoomId, canvasSize, getOffset, isDark, mounted]);
 
   // Click to select room
   const handleCanvasClick = useCallback(
@@ -236,25 +265,25 @@ export default function FloorplanCanvas() {
 
   if (!layout) {
     return (
-      <div className="flex items-center justify-center h-full bg-[#0d1117] rounded-2xl border border-gray-800">
+      <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-[#0d1117] rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300">
         <div className="text-center text-gray-500 p-8">
           <svg className="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
-          <p className="text-lg font-medium">No floorplan yet</p>
-          <p className="text-sm mt-1">Generate a design to see the preview here</p>
+          <p className="text-lg font-medium">{t.noFloorplan}</p>
+          <p className="text-sm mt-1">{t.noFloorplanDesc}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-gray-800">
+    <div ref={containerRef} className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 transition-colors duration-300">
       <canvas
         ref={canvasRef}
         width={canvasSize.width}
         height={canvasSize.height}
-        className="w-full h-full cursor-crosshair"
+        className="w-full h-full cursor-crosshair bg-gray-50 dark:bg-[#1a1a2e]"
         onClick={handleCanvasClick}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -266,16 +295,16 @@ export default function FloorplanCanvas() {
       <div className="absolute bottom-4 right-4 flex gap-2">
         <button
           onClick={() => useHouseStore.getState().setScale(Math.max(20, scale - 10))}
-          className="w-9 h-9 rounded-lg bg-gray-800/80 backdrop-blur text-white flex items-center justify-center hover:bg-gray-700 transition-colors border border-gray-700"
+          className="w-9 h-9 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur text-gray-900 dark:text-white flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm"
         >
           −
         </button>
-        <span className="flex items-center px-3 text-xs text-gray-400 bg-gray-800/80 backdrop-blur rounded-lg border border-gray-700">
+        <span className="flex items-center px-3 text-xs text-gray-700 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
           {scale}px/m
         </span>
         <button
           onClick={() => useHouseStore.getState().setScale(Math.min(120, scale + 10))}
-          className="w-9 h-9 rounded-lg bg-gray-800/80 backdrop-blur text-white flex items-center justify-center hover:bg-gray-700 transition-colors border border-gray-700"
+          className="w-9 h-9 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur text-gray-900 dark:text-white flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm"
         >
           +
         </button>
