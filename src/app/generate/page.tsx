@@ -71,6 +71,15 @@ export default function GeneratePage() {
             <RoomPanel />
 
             <ExportButtons />
+
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-800 text-center">
+              <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                Created & Developed by <span className="font-semibold text-gray-600 dark:text-gray-400">Muhammad Nuril</span>
+              </p>
+              <p className="text-[9px] text-gray-400 dark:text-gray-600 mt-0.5">
+                © {new Date().getFullYear()} AI House Design. All rights reserved.
+              </p>
+            </div>
           </div>
         </motion.aside>
 
