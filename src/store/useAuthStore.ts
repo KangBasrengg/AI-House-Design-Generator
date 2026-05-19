@@ -193,3 +193,4 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return profile.role === 'member' || profile.role === 'admin';
   },
 }));
+
