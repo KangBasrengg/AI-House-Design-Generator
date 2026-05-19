@@ -141,10 +141,10 @@ export default function ExportButtons() {
                       : 'AutoCAD (DXF) export and High Resolution PNG are only available for members. Contact admin for activation.'}
                   </p>
                   <button
-                    onClick={() => setShowUpgrade(false)}
-                    className="mt-2 text-xs text-amber-600 dark:text-amber-400 hover:underline"
+                    onClick={() => { window.location.href = "/upgrade"; }}
+                    className="mt-3 inline-block px-4 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition-colors"
                   >
-                    {lang === 'id' ? 'Tutup' : 'Dismiss'}
+                    {lang === 'id' ? 'Upgrade Sekarang' : 'Upgrade Now'}
                   </button>
                 </div>
               </div>

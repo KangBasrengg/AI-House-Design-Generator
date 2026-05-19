@@ -329,7 +329,7 @@ export default function FloorplanCanvas() {
           onClick={() => useHouseStore.getState().setScale(Math.max(20, scale - 10))}
           className="w-9 h-9 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur text-gray-900 dark:text-white flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm"
         >
-          âˆ’
+          -
         </button>
         <span className="flex items-center px-3 text-xs text-gray-700 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
           {scale}px/m
@@ -344,4 +344,5 @@ export default function FloorplanCanvas() {
     </div>
   );
 }
+
 
