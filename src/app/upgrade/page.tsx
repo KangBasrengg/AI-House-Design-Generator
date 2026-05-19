@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -68,7 +68,7 @@ export default function UpgradePage() {
         schema: 'public', 
         table: 'chat_messages',
         filter: profile?.role !== 'admin' ? `session_id=eq.${user.id}` : undefined
-      }, (payload) => {
+      }, (payload: any) => {
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
       })
       .subscribe();
@@ -319,3 +319,4 @@ export default function UpgradePage() {
     </div>
   );
 }
+
