@@ -70,7 +70,7 @@ export default function Navbar({ absolute = false }: NavbarProps) {
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
               {profile?.email?.split('@')[0]}
             </span>
-          </div>
+          </Link>
           <button
             onClick={handleSignOut}
             className="p-3 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors shadow-sm"
@@ -93,3 +93,4 @@ export default function Navbar({ absolute = false }: NavbarProps) {
     </nav>
   );
 }
+
