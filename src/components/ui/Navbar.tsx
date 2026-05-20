@@ -57,7 +57,15 @@ export default function Navbar({ absolute = false }: NavbarProps) {
               <span>Admin</span>
             </Link>
           )}
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 shadow-sm">
+                    {profile?.role === 'non-member' && (
+            <Link
+              href="/upgrade"
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white transition-colors font-bold text-xs mr-2 shadow-sm"
+            >
+              ⭐ {lang === 'id' ? 'Upgrade Premium' : 'Upgrade Premium'}
+            </Link>
+          )}
+          <Link href="/profile" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer shadow-sm">
             <UserCircle size={18} className="text-gray-500 dark:text-gray-400" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
               {profile?.email?.split('@')[0]}
