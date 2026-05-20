@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useHouseStore } from '@/store/useHouseStore';
@@ -62,8 +62,8 @@ export default function PromptInput() {
       setLayout(data.layout);
       setDescription(data.description);
 
-      // Increment generate count for tracking
-      await incrementGenerateCount();
+      // Increment generate count for tracking in background
+      incrementGenerateCount().catch(console.error);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
