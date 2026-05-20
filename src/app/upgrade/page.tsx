@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -102,18 +102,7 @@ export default function UpgradePage() {
     setSending(false);
   };
 
-  const handleInstantUpgrade = async () => {
-    if (!user) return;
-    const supabase = getSupabaseBrowser();
-    const { error } = await supabase.from('profiles').update({ role: 'admin' }).eq('id', user.id);
-    if (!error) {
-      await useAuthStore.getState().fetchProfile();
-      alert(lang === 'id' ? 'Berhasil! Anda sekarang adalah Premium.' : 'Success! You are now Premium.');
-      window.location.href = '/generate';
-    } else {
-      alert('Gagal: ' + error.message);
-    }
-  };
+
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -173,14 +162,14 @@ export default function UpgradePage() {
               : 'Get unlimited access to all premium features, including high-resolution AutoCAD export.'}
           </p>
 
-          <div className="space-y-4 mb-8 relative z-10 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <button 
-              onClick={handleInstantUpgrade}
-              className="w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg shadow-lg shadow-amber-500/30 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-            >
-              ⭐ {lang === 'id' ? 'AKTIFKAN PREMIUM SEKARANG (GRATIS)' : 'ACTIVATE PREMIUM NOW (FREE)'} ⭐
-            </button>
-            <p className="text-center text-xs text-gray-500 mt-2">Tombol spesial (Bypass Database) untuk mempermudah Anda.</p>
+          <div className="space-y-3 mb-8 relative z-10 bg-gradient-to-br from-amber-500/10 to-indigo-500/10 p-6 rounded-2xl border border-amber-500/20">
+            <div className="text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{lang === 'id' ? 'Mulai dari' : 'Starting at'}</p>
+              <p className="text-4xl font-bold text-amber-500">Rp 50.000<span className="text-lg font-normal text-gray-400">/{lang === 'id' ? 'bulan' : 'mo'}</span></p>
+            </div>
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+              {lang === 'id' ? 'Hubungi admin melalui chat untuk aktivasi →' : 'Contact admin via chat to activate →'}
+            </p>
           </div>
 
           <div className="space-y-4 mb-8 relative z-10 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700">
